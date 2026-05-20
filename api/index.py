@@ -5,6 +5,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import PlainTextResponse
 from validators.nif import validate_nif, validate_nie
 from validators.cif import validate_cif
 from validators.iban import validate_iban
@@ -25,6 +26,11 @@ app.add_middleware(
     allow_methods=["GET"],
     allow_headers=["*"],
 )
+
+
+@app.get("/google8d3e166e3c73cce2.html", include_in_schema=False)
+def google_verify():
+    return PlainTextResponse("google-site-verification: google8d3e166e3c73cce2.html")
 
 
 @app.get("/health", tags=["Status"])
