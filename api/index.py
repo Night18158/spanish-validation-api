@@ -5,10 +5,11 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import PlainTextResponse, HTMLResponse
 from validators.nif import validate_nif, validate_nie
 from validators.cif import validate_cif
 from validators.iban import validate_iban
+from api.landing import LANDING_HTML
 
 app = FastAPI(
     title="Spanish Data Validation API",
@@ -28,10 +29,21 @@ app.add_middleware(
 )
 
 
+@app.get("/", include_in_schema=False)
+def landing():
+    return HTMLResponse(content=LANDING_HTML)
+
+
+@app.get("/robots.txt", include_in_schema=False)
+def robots():
+    return PlainTextResponse("User-agent: *\nAllow: /\nSitemap: https://spanish-validation-api.vercel.app/sitemap.xml")
+
+
 @app.get("/sitemap.xml", include_in_schema=False)
 def sitemap():
     content = """<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://spanish-validation-api.vercel.app/</loc></url>
   <url><loc>https://spanish-validation-api.vercel.app/docs</loc></url>
   <url><loc>https://spanish-validation-api.vercel.app/validate/nif</loc></url>
   <url><loc>https://spanish-validation-api.vercel.app/validate/nie</loc></url>
