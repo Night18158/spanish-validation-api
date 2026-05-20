@@ -2,6 +2,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,7 +10,7 @@ from fastapi.responses import PlainTextResponse, HTMLResponse
 from validators.nif import validate_nif, validate_nie
 from validators.cif import validate_cif
 from validators.iban import validate_iban
-from api.landing import LANDING_HTML
+from landing import LANDING_HTML
 
 app = FastAPI(
     title="Spanish Data Validation API",
