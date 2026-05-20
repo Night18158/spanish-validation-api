@@ -28,6 +28,20 @@ app.add_middleware(
 )
 
 
+@app.get("/sitemap.xml", include_in_schema=False)
+def sitemap():
+    content = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://spanish-validation-api.vercel.app/docs</loc></url>
+  <url><loc>https://spanish-validation-api.vercel.app/validate/nif</loc></url>
+  <url><loc>https://spanish-validation-api.vercel.app/validate/nie</loc></url>
+  <url><loc>https://spanish-validation-api.vercel.app/validate/cif</loc></url>
+  <url><loc>https://spanish-validation-api.vercel.app/validate/iban</loc></url>
+</urlset>"""
+    from fastapi.responses import Response
+    return Response(content=content, media_type="application/xml")
+
+
 @app.get("/google8d3e166e3c73cce2.html", include_in_schema=False)
 def google_verify():
     return PlainTextResponse("google-site-verification: google8d3e166e3c73cce2.html")
