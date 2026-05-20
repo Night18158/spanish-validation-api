@@ -10,6 +10,7 @@ from fastapi.responses import PlainTextResponse, HTMLResponse
 from validators.nif import validate_nif, validate_nie
 from validators.cif import validate_cif
 from validators.iban import validate_iban
+from validators.detect import detect_and_validate
 from landing import LANDING_HTML
 
 app = FastAPI(
@@ -58,6 +59,23 @@ def sitemap():
 @app.get("/google8d3e166e3c73cce2.html", include_in_schema=False)
 def google_verify():
     return PlainTextResponse("google-site-verification: google8d3e166e3c73cce2.html")
+
+
+@app.get(
+    "/validate/detect",
+    tags=["Validation"],
+    summary="Auto-detect and validate any Spanish document",
+    response_description="Validation result with detected document type",
+)
+def detect_endpoint(
+    value: str = Query(..., description="Any Spanish document: NIF, NIE, CIF or IBAN. The type is detected automatically."),
+):
+    """
+    Automatically detects whether the input is a NIF, NIE, CIF or IBAN and validates it.
+
+    Useful when you don't know in advance what type of document the user will enter.
+    """
+    return detect_and_validate(value)
 
 
 @app.get("/health", tags=["Status"])
