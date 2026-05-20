@@ -21,6 +21,7 @@ REST API for validating Spanish fiscal and identification documents: **NIF, NIE,
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
+| GET | `/validate/detect` | **Auto-detect** and validate any Spanish document |
 | GET | `/validate/nif` | Validate a Spanish NIF |
 | GET | `/validate/nie` | Validate a Spanish NIE |
 | GET | `/validate/cif` | Validate a Spanish CIF + entity type |

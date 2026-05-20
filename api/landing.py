@@ -98,6 +98,11 @@ LANDING_HTML = """<!DOCTYPE html>
 <div class="section">
   <h2>4 Endpoints. Everything you need.</h2>
   <div class="endpoints">
+    <div class="endpoint" style="border-color:#c8aa6e; background:#fffbf0;">
+      <span class="method" style="background:#c8aa6e; color:#1a1a2e;">GET</span>
+      <span class="path">/validate/detect</span>
+      <p><strong>New.</strong> Pass any document — type is detected automatically.</p>
+    </div>
     <div class="endpoint">
       <span class="method">GET</span>
       <span class="path">/validate/nif</span>
