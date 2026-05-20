@@ -19,20 +19,47 @@ IBAN_LENGTHS = {
 }
 
 SPANISH_BANKS = {
+    "0019": "Deutsche Bank",
     "0049": "Santander",
+    "0057": "Deutsche Bank España",
+    "0058": "BNP Paribas",
+    "0061": "Banca March",
+    "0065": "Barclays / CaixaBank",
+    "0073": "Openbank",
     "0075": "Banco Popular",
     "0081": "Banco Sabadell",
+    "0085": "Cetelem",
     "0128": "Bankinter",
+    "0130": "Citibank España",
     "0182": "BBVA",
+    "0186": "Sabadell Urquijo",
+    "0234": "Banco Mediolanum",
+    "0487": "Banco March",
+    "1000": "Caja Postal",
+    "1465": "ING Bank",
+    "1490": "ING Direct",
+    "1491": "Triodos Bank",
+    "1550": "ICO",
+    "2013": "Abanca",
+    "2030": "Banco CAM / Sabadell",
     "2038": "Bankia / CaixaBank",
+    "2048": "Kutxabank",
+    "2072": "Laboral Kutxa",
+    "2080": "Abanca",
+    "2085": "Ibercaja",
+    "2095": "Unnim / BBVA",
     "2100": "CaixaBank",
     "3025": "Ibercaja",
     "3035": "Banco Caminos",
+    "3045": "Caja de Ingenieros",
     "3058": "Cajamar",
+    "3076": "Caixa Guissona",
     "3183": "Caja Rural del Sur",
+    "6000": "Colonya Caixa Pollença",
+    "6010": "Cajasiete",
     "6016": "Openbank",
     "6038": "WiZink",
-    "0073": "Openbank (Santander Digital)",
+    "8005": "Eurocaja Rural",
 }
 
 
@@ -40,27 +67,24 @@ def validate_iban(value: str) -> dict:
     iban = value.strip().upper().replace(" ", "").replace("-", "")
 
     if len(iban) < 5:
-        return {"input": value, "valid": False, "error": "IBAN demasiado corto"}
+        return {"input": value, "valid": False, "error": "IBAN too short"}
 
     country = iban[:2]
     if not country.isalpha():
-        return {"input": value, "valid": False, "error": "Los primeros 2 caracteres deben ser el código de país (ej: ES, DE)"}
+        return {"input": value, "valid": False, "error": "First 2 characters must be the country code (e.g. ES, DE)"}
 
     expected_length = IBAN_LENGTHS.get(country)
     if expected_length is None:
-        return {"input": value, "valid": False, "error": f"Código de país no reconocido: {country}"}
+        return {"input": value, "valid": False, "error": f"Unrecognized country code: {country}"}
 
     if len(iban) != expected_length:
         return {
             "input": value,
             "valid": False,
-            "error": f"El IBAN de {country} debe tener {expected_length} caracteres (recibidos: {len(iban)})",
+            "error": f"{country} IBAN must be {expected_length} characters (got {len(iban)})",
         }
 
-    # Rearrange: move first 4 chars to the end
     rearranged = iban[4:] + iban[:4]
-
-    # Replace each letter with its numeric equivalent (A=10, B=11, ...)
     numeric_str = ""
     for char in rearranged:
         if char.isalpha():
@@ -82,6 +106,8 @@ def validate_iban(value: str) -> dict:
         bank_code = iban[4:8]
         result["bank_code"] = bank_code
         result["branch_code"] = iban[8:12]
-        result["bank_name"] = SPANISH_BANKS.get(bank_code, "Entidad no identificada")
+        bank_name = SPANISH_BANKS.get(bank_code)
+        if bank_name:
+            result["bank_name"] = bank_name
 
     return result

@@ -21,39 +21,34 @@ CIF_ENTITY_TYPES = {
     "W": "Establecimiento permanente de entidad no residente en España",
 }
 
-# These letter types require a letter as the control character
 CIF_LETTER_CONTROL = set("PQRSW")
-# These letter types require a digit as the control character
 CIF_DIGIT_CONTROL = set("ABEH")
-# The rest accept either
 
 
 def validate_cif(value: str) -> dict:
     value = value.strip().upper()
 
     if len(value) != 9:
-        return {"input": value, "valid": False, "error": "Debe tener exactamente 9 caracteres"}
+        return {"input": value, "valid": False, "error": "Must be exactly 9 characters"}
 
     entity_letter = value[0]
     if entity_letter not in CIF_ENTITY_TYPES:
         return {
             "input": value,
             "valid": False,
-            "error": f"Letra de tipo de entidad no reconocida: {entity_letter}",
+            "error": f"Unrecognized entity type letter: {entity_letter}",
         }
 
     try:
         digits = [int(d) for d in value[1:8]]
     except ValueError:
-        return {"input": value, "valid": False, "error": "Las posiciones 2-8 deben ser dígitos"}
+        return {"input": value, "valid": False, "error": "Positions 2-8 must be digits"}
 
-    # Odd positions (1-indexed): index 0, 2, 4, 6 — multiply by 2, sum digits if >= 10
     odd_sum = 0
     for i in (0, 2, 4, 6):
         doubled = digits[i] * 2
         odd_sum += doubled if doubled < 10 else doubled - 9
 
-    # Even positions (1-indexed): index 1, 3, 5 — add directly
     even_sum = digits[1] + digits[3] + digits[5]
 
     total = odd_sum + even_sum
@@ -74,4 +69,8 @@ def validate_cif(value: str) -> dict:
         "valid": valid,
         "type": "CIF",
         "entity_type": CIF_ENTITY_TYPES[entity_letter],
+        "expected_control": control_letter if entity_letter in CIF_LETTER_CONTROL else (
+            str(control_digit) if entity_letter in CIF_DIGIT_CONTROL else
+            f"{control_digit} or {control_letter}"
+        ),
     }
